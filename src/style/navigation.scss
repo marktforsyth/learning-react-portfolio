@@ -19,15 +19,13 @@
         a {
             color: $grey;
             text-decoration: none;
-            transition: 0.5s ease-in-out;
+            &:hover {
+                color: black;
+            }
         }
 
         &:hover {
             border-bottom: 1px solid black;
-
-            a {
-                color: black;
-            }
         }
 
         .nav-link-active {
