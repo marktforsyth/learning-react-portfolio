@@ -14,9 +14,9 @@ export default class PortfolioManager extends Component {
     }
 
     handleSuccessfulFormSubmission(portfolioItem) {
-        // TODO
-        // update the portfolioItems state
-        // and add the portfolioItem to the list
+        this.setState({
+            portfolioItems: [portfolioItem].concat(this.state.portfolioItems)
+        })
     }
 
     handleFormSubmissionError(error) {
@@ -25,7 +25,7 @@ export default class PortfolioManager extends Component {
 
     getPortfolioItems() {
         axios
-            .get('https://marktforsyth.devcamp.space/portfolio/portfolio_items',
+            .get('https://marktforsyth.devcamp.space/portfolio/portfolio_items?order_by=created_at&direction=desc',
                 { withCredentials: true }
             )
             .then(response => {
@@ -47,7 +47,7 @@ export default class PortfolioManager extends Component {
             <div className='portfolio-manager-wrapper'>
                 <div className='left-column'>
                     <PortfolioForm
-                        handleSuccessfulFormSubmission={() => this.handleSuccessfulFormSubmission()}
+                        handleSuccessfulFormSubmission={portfolioItem => this.handleSuccessfulFormSubmission(portfolioItem)}
                         handleFormSubmissionError={() => this.handleFormSubmissionError()}
                     />
                 </div>
