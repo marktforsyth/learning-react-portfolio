@@ -9,8 +9,38 @@ export default class PortfolioManager extends Component {
         super()
 
         this.state = {
-            portfolioItems: []
+            portfolioItems: [],
+            portfolioToEdit: {}
         }
+    }
+
+    clearPortfolioToEdit() {
+        this.setState({
+            portfolioToEdit: {}
+        })
+    }
+
+    handleEditClick(portfolioItem) {
+        this.setState({
+            portfolioToEdit: portfolioItem
+        })
+    }
+
+    handleDeleteClick(portfolioItem) {
+        axios.delete(
+            `https://api.devcamp.space/portfolio/portfolio_items/${portfolioItem.id}`,
+            { withCredentials: true }
+        ).then(response => {
+            this.setState({
+                portfolioItems: this.state.portfolioItems.filter(item => {
+                    return item.id !== portfolioItem.id
+                })
+            })
+
+            return response.data
+        }).catch(error => {
+            console.log('handleDeleteClick error', error)
+        })
     }
 
     handleSuccessfulFormSubmission(portfolioItem) {
@@ -49,11 +79,17 @@ export default class PortfolioManager extends Component {
                     <PortfolioForm
                         handleSuccessfulFormSubmission={portfolioItem => this.handleSuccessfulFormSubmission(portfolioItem)}
                         handleFormSubmissionError={() => this.handleFormSubmissionError()}
+                        clearPortfolioToEdit={() => this.clearPortfolioToEdit()}
+                        portfolioToEdit={this.state.portfolioToEdit}
                     />
                 </div>
 
                 <div className='right-column'>
-                    <PortfolioSidebarList data={this.state.portfolioItems} />
+                    <PortfolioSidebarList
+                        handleDeleteClick={portfolioItem => this.handleDeleteClick(portfolioItem)}
+                        data={this.state.portfolioItems}
+                        handleEditClick={portfolioItem => this.handleEditClick(portfolioItem)}
+                    />
                 </div>
             </div>
         )
