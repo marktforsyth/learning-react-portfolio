@@ -6,12 +6,6 @@ textarea {
     outline: none;
     padding: 10px;
     font-family: "Raleway", sans-serif;
-    transition: 0.5s all ease-in-out;
-
-    &:focus {
-        outline: none;
-        border: 1px solid $dark-teal;
-    }
 }
 
 .select-element {
