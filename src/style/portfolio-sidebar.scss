@@ -32,6 +32,12 @@
                         color: $warning;
                     }
                 }
+
+                .edit {
+                    &:hover {
+                        color: #00ac00;
+                    }
+                }
             }
         }
     }

@@ -1,14 +1,119 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { Component } from 'react'
+import axios from 'axios'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-export default function() {
-    return (
-        <div>
-            <h2>Blog</h2>
+import BlogItem from '../blog/blog-item'
+import BlogModal from '../modals/blog-modal'
 
-            <div>
-                <Link to='/about-me'>Read more about myself</Link>
+class Blog extends Component {
+    constructor() {
+        super()
+
+        this.state = {
+            blogItems: [],
+            totalCount: 0,
+            currentPage: 0,
+            isLoading: true,
+            blogModalIsOpen: false
+        }
+
+        this.onScroll = this.onScroll.bind(this)
+        window.addEventListener('scroll', this.onScroll, false)
+    }
+
+    handleSuccessfulNewBlogSubmission(blog) {
+        console.log('handleSuccessfulNewBlogSubmission', blog)
+        this.setState({
+            blogModalIsOpen: false,
+            blogItems: [blog].concat(this.state.blogItems)
+        })
+    }
+    
+    handleBlogModalClose() {
+        this.setState({
+            blogModalIsOpen: false
+        })
+    }
+
+    handleNewBlogClick() {
+        this.setState({
+            blogModalIsOpen: true
+        })
+    }
+
+    onScroll() {
+        if (this.state.isLoading || this.state.blogItems.length === this.state.totalCount) {
+            return
+        }
+
+        if (
+            document.documentElement.scrollTop ===
+            (document.documentElement.offsetHeight - window.innerHeight)
+        ) {
+            this.getBlogItems()
+        }
+    }
+
+    getBlogItems() {
+        this.setState({
+            currentPage: this.state.currentPage + 1
+        })
+
+        axios.get(
+            `https://marktforsyth.devcamp.space/portfolio/portfolio_blogs?page=${this.state.currentPage}`,
+            { withCredentials: true }
+        ).then(response => {
+            this.setState({
+                blogItems: this.state.blogItems.concat(response.data.portfolio_blogs),
+                totalCount: response.data.meta.total_records,
+                isLoading: false
+            })
+        }).catch(error => {
+            console.log('getBlogItems error', error)
+        })
+    }
+
+    componentDidMount() {
+        this.getBlogItems()
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.onScroll, false)
+    }
+
+    render() {
+        const blogRecords = this.state.blogItems.map(blogItem => {
+            return <BlogItem key={blogItem.id} blogItem={blogItem} />
+        })
+
+        return (
+            <div className='blog-container'>
+                <BlogModal
+                    handleModalClose={() => this.handleBlogModalClose()}
+                    modalIsOpen={this.state.blogModalIsOpen}
+                    handleSuccessfulNewBlogSubmission={
+                        blog => this.handleSuccessfulNewBlogSubmission(blog)
+                    }
+                />
+                
+                {this.props.loggedInStatus === 'LOGGED_IN' ? (
+                    <div className='new-blog-link'>
+                        <a onClick={() => this.handleNewBlogClick()}>
+                            <FontAwesomeIcon icon='plus-circle' />
+                        </a>
+                    </div>
+                ) : null}
+
+                <div className='content-container'>{blogRecords}</div>
+
+                {this.state.isLoading ? (
+                    <div className='content-loader'>
+                    <FontAwesomeIcon icon='spinner' spin />
+                </div>
+                ) : null}
             </div>
-        </div>
-    )
+        )
+    }
 }
+
+export default Blog

@@ -13,7 +13,7 @@ const PortfolioSidebarList = props => {
 
                     <div className='actions'>
                         <a
-                            className='action-icon'
+                            className='action-icon edit'
                             onClick={() => props.handleEditClick(portfolioItem)}
                         >
                             <FontAwesomeIcon icon='edit' />
