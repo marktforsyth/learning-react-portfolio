@@ -22,7 +22,6 @@ class Blog extends Component {
     }
 
     handleSuccessfulNewBlogSubmission(blog) {
-        console.log('handleSuccessfulNewBlogSubmission', blog)
         this.setState({
             blogModalIsOpen: false,
             blogItems: [blog].concat(this.state.blogItems)
