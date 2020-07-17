@@ -5,6 +5,9 @@ import DropzoneComponent from 'react-dropzone-component'
 import '../../../node_modules/react-dropzone-component/styles/filepicker.css'
 import '../../../node_modules/dropzone/dist/min/dropzone.min.css'
 
+import DeleteImage from '../../helpers/delete-image'
+import CheckIfImage from '../../helpers/check-if-image'
+
 export default class PortfolioForm extends Component {
     constructor(props) {
         super(props)
@@ -29,15 +32,12 @@ export default class PortfolioForm extends Component {
     }
 
     deleteImage(imageType) {
-        axios.delete(
-            `https://api.devcamp.space/portfolio/delete-portfolio-image/${this.state.id}?image_type=${imageType}`,
-            { withCredentials: true }
-        ).then(response => {
+        DeleteImage(imageType, this.state.id, false, response => {
             this.setState({
                 [`${imageType}_url`]: ''
             })
-        }).catch(error => {
-            console.log('deleteImage error', error)
+
+            return response
         })
     }
 
@@ -94,7 +94,7 @@ export default class PortfolioForm extends Component {
 
     componentConfig() {
         return {
-            iconFileTypes: ['.jpg', '.png'],
+            iconFiletypes: ['.jpg', '.png'],
             showFiletypeIcon: true,
             postUrl: 'https://httpbin.org/post'
         }
@@ -170,7 +170,8 @@ export default class PortfolioForm extends Component {
                 refsToDelete.forEach(ref => {
                     ref.current.dropzone.removeAllFiles()
                 })
-            }).catch(error => {
+            })
+            .catch(error => {
                 console.log('portfolio-form handleSubmit error: ', error)
             })
 
@@ -229,30 +230,29 @@ export default class PortfolioForm extends Component {
                 </div>
 
                 <div className='image-uploaders'>
-                    {this.state.thumb_image_url && this.state.editMode ? (
-                        <div className='portfolio-manager-image-wrapper'>
-                            <img src={this.state.thumb_image_url} />
-                            {console.log('Here it is. The very same: ', this.state.thumb_image)}
+                        {this.state.thumb_image_url && this.state.editMode ? (
+                            <div className='edit-mode-image-wrapper'>
+                                <img src={this.state.thumb_image_url} />
 
-                            <div className='image-removal-link'>
-                                <a onClick={() => this.deleteImage('thumb_image')}>
-                                    Delete file
-                                </a>
+                                <div className='image-removal-link'>
+                                    <a onClick={() => this.deleteImage('thumb_image')}>
+                                        Delete file
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        ) : (
-                        <DropzoneComponent
-                            ref={this.thumbRef}
-                            config={this.componentConfig()}
-                            djsConfig={this.djsConfig()}
-                            eventHandlers={this.handleThumbDrop()}
-                        >
-                            <div className='dz-message'>Thumbnail</div>
-                        </DropzoneComponent>
-                    )}
+                            ) : (
+                            <DropzoneComponent
+                                ref={this.thumbRef}
+                                config={this.componentConfig()}
+                                djsConfig={this.djsConfig()}
+                                eventHandlers={this.handleThumbDrop()}
+                            >
+                                <div className='dz-message'>Thumbnail</div>
+                            </DropzoneComponent>
+                        )}
 
                     {this.state.banner_image_url && this.state.editMode ? (
-                        <div className='portfolio-manager-image-wrapper'>
+                        <div className='edit-mode-image-wrapper'>
                             <img src={this.state.banner_image_url} />
 
                             <div className='image-removal-link'>
@@ -273,7 +273,7 @@ export default class PortfolioForm extends Component {
                     )}
 
                     {this.state.logo_url && this.state.editMode ? (
-                        <div className='portfolio-manager-image-wrapper'>
+                        <div className='edit-mode-image-wrapper'>
                             <img src={this.state.logo_url} />
 
                             <div className='image-removal-link'>

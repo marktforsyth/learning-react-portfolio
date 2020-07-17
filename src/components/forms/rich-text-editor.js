@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { EditorState, convertToRaw } from 'draft-js'
+import { EditorState, convertToRaw, ContentState } from 'draft-js'
 import { Editor } from 'react-draft-wysiwyg'
 import draftToHtml from 'draftjs-to-html'
 import htmlToDraft from 'html-to-draftjs'
@@ -13,6 +13,16 @@ export default class RichTextEditor extends Component {
         }
     }
 
+    componentDidMount() {
+        if (this.props.editMode && this.props.contentToEdit) {
+            const blocksFromHtml = htmlToDraft(this.props.contentToEdit)
+            const { contentBlocks, entityMap } = blocksFromHtml
+            const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+            const editorState = EditorState.createWithContent(contentState)
+            this.setState({ editorState })
+        }
+    }
+
     onEditorStateChange(editorState) {
         this.setState(
             { editorState },
@@ -20,6 +30,20 @@ export default class RichTextEditor extends Component {
                 draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
             )
         )
+    }
+
+    getBase64(file, callback) {
+        let reader = new FileReader()
+
+        reader.readAsDataURL(file)
+        reader.onload = () => callback(reader.result)
+        reader.onerror = error => {}
+    }
+
+    uploadFile(file) {
+        return new Promise((resolve, reject) => {
+            this.getBase64(file, data => resolve({ data: { link: data } }))
+        })
     }
 
     render() {
@@ -30,6 +54,19 @@ export default class RichTextEditor extends Component {
                     wrapperClassName='demo-wrapper'
                     editorClassName='demo-editor'
                     onEditorStateChange={editorState => this.onEditorStateChange(editorState)}
+                    toolbar={{
+                        inline: { inDropdown: true },
+                        list: { inDropdown: true },
+                        textAlign: { inDropdown: true },
+                        link: { inDropdown: true },
+                        history: { inDropdown: true },
+                        image: {
+                            uploadCallback: file => this.uploadFile(file),
+                            alt: { present: true, mandatory: false },
+                            previewImage: true,
+                            inputAccept: 'image/gif,image/jpeg,image/jpg,image/png,image/svg'
+                        }
+                    }}
                 />
             </div>
         )
