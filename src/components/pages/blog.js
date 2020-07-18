@@ -58,6 +58,12 @@ class Blog extends Component {
             currentPage: this.state.currentPage + 1
         })
 
+        if (this.state.blogItems.length !== this.state.totalCount) {
+            this.setState({
+                isLoading: true
+            })
+        }
+
         axios.get(
             `https://marktforsyth.devcamp.space/portfolio/portfolio_blogs?page=${this.state.currentPage}`,
             { withCredentials: true }

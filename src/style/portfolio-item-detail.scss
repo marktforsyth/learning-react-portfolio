@@ -1,0 +1,52 @@
+.portfolio-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .content-container {
+        width: 50%;
+
+        .portfolio-item-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+
+            h1 {
+                font-size: 2em;
+                font-family: 'EB Garamond', serif;
+            }
+
+            .item-logo {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 5px 10px;
+                border: 1px solid black;
+                border-radius: 4px;
+                transition: 0.4s ease-in-out;
+
+                img {
+                    height: 42px;
+                    filter: invert(1);
+                    transition: 0.4s ease-in-out;
+                }
+
+                &:hover {
+                    background-color: black;
+                    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+
+                    img {
+                        filter: none;
+                    }
+                }
+            }
+        }
+
+        h2 {
+            line-height: 1.5;
+            color: $dark-teal;
+            text-align: center;
+        }
+    }
+}

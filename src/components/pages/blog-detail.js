@@ -3,7 +3,7 @@ import axios from 'axios'
 import ReactHtmlParser from 'react-html-parser'
 
 import BlogForm from '../blog/blog-form'
-import BlogFeaturedImage from '../blog/blog-featured-image'
+import HeaderFeaturedImage from '../header-images/header-featured-image'
 
 export default class BlogDetail extends Component {
     constructor(props) {
@@ -32,8 +32,9 @@ export default class BlogDetail extends Component {
     }
 
     handleEditClick() {
-        console.log('handle edit clicked')
-        this.setState({ editMode: true })
+        if (this.props.loggedInStatus === 'LOGGED_IN') {
+            this.setState({ editMode: true })
+        }
     }
 
     getBlogItem() {
@@ -73,7 +74,7 @@ export default class BlogDetail extends Component {
                     <div className='content-container'>
                         <h1 onClick={() => this.handleEditClick()}>{title}</h1>
 
-                        <BlogFeaturedImage img={featured_image_url} />
+                        <HeaderFeaturedImage img={featured_image_url} />
 
                         <div className='content'>{ReactHtmlParser(content)}</div>
                     </div>

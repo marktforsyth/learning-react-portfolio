@@ -24,6 +24,8 @@ export default class PortfolioManager extends Component {
         this.setState({
             portfolioToEdit: portfolioItem
         })
+
+        window.scrollTo(0, 0)
     }
 
     handleDeleteClick(portfolioItem) {
