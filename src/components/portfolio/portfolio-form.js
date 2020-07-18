@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import DropzoneComponent from 'react-dropzone-component'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import '../../../node_modules/react-dropzone-component/styles/filepicker.css'
 import '../../../node_modules/dropzone/dist/min/dropzone.min.css'
 
 import DeleteImage from '../../helpers/delete-image'
-import CheckIfImage from '../../helpers/check-if-image'
 
 export default class PortfolioForm extends Component {
     constructor(props) {
@@ -237,6 +237,7 @@ export default class PortfolioForm extends Component {
                                 <div className='image-removal-link'>
                                     <a onClick={() => this.deleteImage('thumb_image')}>
                                         Delete file
+                                        <FontAwesomeIcon icon='backspace' />
                                     </a>
                                 </div>
                             </div>
@@ -258,6 +259,7 @@ export default class PortfolioForm extends Component {
                             <div className='image-removal-link'>
                                 <a onClick={() => this.deleteImage('banner_image')}>
                                     Delete file
+                                    <FontAwesomeIcon icon='backspace' />
                                 </a>
                             </div>
                         </div>
@@ -279,6 +281,7 @@ export default class PortfolioForm extends Component {
                             <div className='image-removal-link'>
                                 <a onClick={() => this.deleteImage('logo')}>
                                     Delete file
+                                    <FontAwesomeIcon icon='backspace' />
                                 </a>
                             </div>
                         </div>
