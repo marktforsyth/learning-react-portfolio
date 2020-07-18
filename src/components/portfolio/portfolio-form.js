@@ -179,35 +179,6 @@ export default class PortfolioForm extends Component {
     }
 
     render() {
-        const displayImagesOrDropzone = (imageType, imageTypeUrl, imageTypeDisplayName, refType, dropHandler) => {
-            console.log('img_url: ', this.state[imageTypeUrl])
-            
-            if ((this.state[imageTypeUrl]) && this.state.editMode) {
-                return (
-                    <div className='edit-mode-image-wrapper'>
-                        <img src={this.state[imageTypeUrl]} />
-
-                        <div className='image-removal-link'>
-                            <a onClick={() => this.deleteImage(imageType)}>
-                                Delete file
-                            </a>
-                        </div>
-                    </div>
-                )
-            } else {
-                return (
-                    <DropzoneComponent
-                        ref={refType}
-                        config={this.componentConfig()}
-                        djsConfig={this.djsConfig()}
-                        eventHandlers={() => dropHandler()}
-                    >
-                        <div className='dz-message'>{imageTypeDisplayName}</div>
-                    </DropzoneComponent>
-                )
-            }
-        }
-
         return (
             <form onSubmit={() => this.handleSubmit(event)} className='portfolio-form-wrapper'>
                 <div className='two-column'>
@@ -259,31 +230,26 @@ export default class PortfolioForm extends Component {
                 </div>
 
                 <div className='image-uploaders'>
-                    {displayImagesOrDropzone(
-                        'thumb_image',
-                        'thumb_image_url',
-                        'Thumbnail',
-                        this.thumbRef,
-                        this.handleThumbDrop()
-                    )}
+                        {this.state.thumb_image_url && this.state.editMode ? (
+                            <div className='edit-mode-image-wrapper'>
+                                <img src={this.state.thumb_image_url} />
 
-                    {displayImagesOrDropzone(
-                        'banner_image',
-                        'banner_image_url',
-                        'Banner',
-                        this.bannerRef,
-                        this.handleBannerDrop()
-                    )}
-
-                    {displayImagesOrDropzone(
-                        'logo',
-                        'logo_url',
-                        'Logo',
-                        this.logoRef,
-                        this.handleLogoDrop()
-                    )}
-                    {/* {displayImagesOrDropzone('banner_image', 'banner_image_url', 'Banner')}
-                    {displayImagesOrDropzone('logo', 'logo_url', 'Logo')}
+                                <div className='image-removal-link'>
+                                    <a onClick={() => this.deleteImage('thumb_image')}>
+                                        Delete file
+                                    </a>
+                                </div>
+                            </div>
+                            ) : (
+                            <DropzoneComponent
+                                ref={this.thumbRef}
+                                config={this.componentConfig()}
+                                djsConfig={this.djsConfig()}
+                                eventHandlers={this.handleThumbDrop()}
+                            >
+                                <div className='dz-message'>Thumbnail</div>
+                            </DropzoneComponent>
+                        )}
 
                     {this.state.banner_image_url && this.state.editMode ? (
                         <div className='edit-mode-image-wrapper'>
@@ -325,7 +291,7 @@ export default class PortfolioForm extends Component {
                         >
                             <div className='dz-message'>Logo</div>
                         </DropzoneComponent>
-                    )} */}
+                    )}
                 </div>
 
                 <div>
